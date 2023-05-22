@@ -72,7 +72,7 @@ const keys = {
 			[51.75, 55.25, 70, 90]
 		]
 	}
-}
+};
 
 
 function setup() {
@@ -121,13 +121,13 @@ function draw() {
 			// img.pixels[j] = 0;
 			// img.pixels[j + 1] = 0;
 			// img.pixels[j + 2] = 0;
-			bline(m.lx, m.ly, m.llx, m.lly, 0, 0, 0)
+			bline(m.lx, m.ly, m.llx, m.lly, 0, 0, 0);
 		}
 		if (y == f(m.y) && x == f(m.x)) {
 			// img.pixels[j] = 255;
 			// img.pixels[j + 1] = 255;
 			// img.pixels[j + 2] = 255;
-			bline(m.x, m.y, m.lx, m.ly, 0, 255, 255)
+			bline(m.x, m.y, m.lx, m.ly, 0, 255, 255);
 		}
 
 	}
