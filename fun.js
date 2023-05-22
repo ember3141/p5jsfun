@@ -74,6 +74,15 @@ const keys = {
 	}
 };
 
+var cont = {
+	slide : {
+		x:50,
+		y:50,
+		min:0,
+		max:100,
+		inc:1,
+	}
+};
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
@@ -90,10 +99,13 @@ function setup() {
 	noSmooth();
 	noCursor();
 	m = {};
+	
 	m.llx = 0;
 	m.lly = 0;
 	m.lx = 0;
 	m.ly = 0;
+	m.down=false;
+
 }
 
 function draw() {
@@ -127,9 +139,15 @@ function draw() {
 			// img.pixels[j] = 255;
 			// img.pixels[j + 1] = 255;
 			// img.pixels[j + 2] = 255;
+			if(m.down==true){
+
+				bline(m.x, m.y, m.lx, m.ly, 255,0,0);
+			} else {
 			bline(m.x, m.y, m.lx, m.ly, 0, 255, 255);
 		}
+		}
 
+		
 	}
 	img.updatePixels();
 	image(img, 0, 0, CX, CY, 0, 0);
@@ -178,4 +196,13 @@ function bline(x0, y0, x1, y1, c1, c2, c3) {
 			y0 += sy;
 		}
 	}
+}
+
+
+function mousePressed() {
+   m.down = true;
+}
+
+function mouseReleased() {
+    m.down = false;
 }
