@@ -120,7 +120,37 @@ var controls = {
 		max: 100,
 		inc: 1,
 		val: 0.5
-	}
+	},
+	blide: {
+		sx: 10,
+		sy: 40,
+		ex: 10,
+		ey: 50,
+		min: 0,
+		max: 100,
+		inc: 1,
+		val: 0.5
+	},
+	clide: {
+		sx: 15,
+		sy: 40,
+		ex: 15,
+		ey: 50,
+		min: 0,
+		max: 100, 
+		inc: 1,
+		val: 0.5
+	},
+	dlide: {
+		sx: 20,
+		sy: 40,
+		ex: 20,
+		ey: 50,
+		min: 0,
+		max: 100,
+		inc: 1,
+		val: 0.5
+	},
 };
 
 function setup() {
@@ -154,6 +184,9 @@ function draw() {
 
 	img.loadPixels();
 	drawcontrol("slide");
+	drawcontrol("blide");
+	drawcontrol("clide");
+	drawcontrol("dlide");
 	touchtrack[0] = false;
 	for (var i = 0; i < img.pixels.length / 4; i++) {
 		j = i * 4;
@@ -214,7 +247,7 @@ function draw() {
 		for(var n =0; n<Object.keys(controls).length; n++){
 			var ct = controls[Object.keys(controls)[n]];
 			var dist = Math.sqrt(Math.pow(ct.sx - ct.ex, 2) + Math.pow(ct.sy - ct.ey, 2));
-			if((m.x>ct.sx-2||m.x<ct.sx+2)&&m.y>ct.sy&&m.y<ct.ey&&m.down==true){
+			if((m.x>ct.sx-2&&m.x<ct.sx+2)&&m.y>ct.sy&&m.y<ct.ey&&m.down==true){
 				  ct.val=((m.y-ct.sy)/dist);
 			}
 		}
@@ -225,7 +258,7 @@ function draw() {
 		keys[Object.keys(keys)[touchtrack[1]]].touching = false;
 		touchtrack = [false, 0];
 	}
-console.log(controls.slide.val);
+// console.log(controls.slide.val);
 
 	img.updatePixels();
 	image(img, 0, 0, CX, CY, 0, 0);
