@@ -11,14 +11,16 @@ const keys = {
 			[10, 16.25, 80, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	cs: {
 		s: [
 			[14, 18, 70, 80]
 		],
 		color: [255,0,0],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	d: {
 		s: [
@@ -26,14 +28,16 @@ const keys = {
 			[18, 21.75, 70, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	ds: {
 		s: [
 			[21, 25, 70, 80]
 		],
 		color: [255,0,0],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	e: {
 		s: [
@@ -41,7 +45,8 @@ const keys = {
 			[25, 29.25, 70, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	f: {
 		s: [
@@ -49,14 +54,16 @@ const keys = {
 			[29.25, 35.5, 80, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	fs: {
 		s: [
 			[33, 37, 70, 80]
 		],
 		color: [255,0,0],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	g: {
 		s: [
@@ -64,14 +71,16 @@ const keys = {
 			[37, 40.75, 70, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	gs: {
 		s: [
 			[40.75, 44.75, 70, 80]
 		],
 		color: [255,0,0],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	a: {
 		s: [
@@ -79,14 +88,16 @@ const keys = {
 			[44, 47.75, 70, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	as: {
 		s: [
 			[47.75, 51.75, 70, 80]
 		],
 		color: [255,0,0],
-		touching: false
+		touching: false,
+		pressed: false
 	},
 	b: {
 		s: [
@@ -94,7 +105,8 @@ const keys = {
 			[51.75, 55.25, 70, 90]
 		],
 		color: [255,255,255],
-		touching: false
+		touching: false,
+		pressed: false
 	}
 };
 
