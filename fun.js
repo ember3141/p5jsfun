@@ -153,7 +153,7 @@ function draw() {
 	m.y = f(mouseY * IY / CY);
 
 	img.loadPixels();
-	
+	drawcontrol("slide");
 	touchtrack[0] = false;
 	for (var i = 0; i < img.pixels.length / 4; i++) {
 		j = i * 4;
@@ -214,8 +214,8 @@ function draw() {
 		for(var n =0; n<Object.keys(controls).length; n++){
 			var ct = controls[Object.keys(controls)[n]];
 			var dist = Math.sqrt(Math.pow(ct.sx - ct.ex, 2) + Math.pow(ct.sy - ct.ey, 2));
-			if(m.x==ct.sx&&m.y>ct.sy&&m.y<ct.ey&&m.down==true){
-				//   ct.val=(m.y-ct.ey/dist)*0.01;
+			if((m.x>ct.sx-2||m.x<ct.sx+2)&&m.y>ct.sy&&m.y<ct.ey&&m.down==true){
+				  ct.val=((m.y-ct.sy)/dist);
 			}
 		}
 
@@ -226,7 +226,7 @@ function draw() {
 		touchtrack = [false, 0];
 	}
 console.log(controls.slide.val);
-drawcontrol("slide");
+
 	img.updatePixels();
 	image(img, 0, 0, CX, CY, 0, 0);
 	m.llx = m.lx;
@@ -305,10 +305,10 @@ function drawcontrol(name) {
 	// img.set(ct.sx + 2, ct.sy + dist * ct.val, color(155, 155, 155));
 	img.set(ct.sx - 1, ct.sy + dist * ct.val, color(155, 155, 155));
 
-	bline(ct.sx+1, ct.sy, ct.ex+1, ct.sy + dist * ct.val-1,255, 0, 0);
-	bline(ct.sx-1, ct.sy, ct.ex-1, ct.sy + dist * ct.val-1,255, 0, 0);
-	bline(ct.sx-1, ct.ey, ct.ex-1, ct.sy + dist * ct.val+1,255, 0, 0);
-	bline(ct.sx+1, ct.ey, ct.ex+1, ct.sy + dist * ct.val+1,255, 0, 0);
+	bline(ct.sx+1, ct.sy, ct.ex+1, f(ct.sy + dist * ct.val-1),0, 0, 0);
+	bline(ct.sx-1, ct.sy, ct.ex-1, f(ct.sy + dist * ct.val-1),0, 0, 0);
+	bline(ct.sx-1, ct.ey, ct.ex-1, f(ct.sy + dist * ct.val+1),0, 0, 0);
+	bline(ct.sx+1, ct.ey, ct.ex+1, f(ct.sy + dist * ct.val+1),0, 0, 0);
 
 }
 
