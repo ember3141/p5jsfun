@@ -132,17 +132,18 @@ function setup() {
 	m.lx = 0;
 	m.ly = 0;
 	m.down=false;
-
+	touchtrack = [false,0];
 }
 
 function draw() {
+// console.log(keys[Object.keys(keys)[1]].touching);
 	clear();
 	m.x = f(mouseX * IX / CX);
 	m.y = f(mouseY * IY / CY);
 	
 	img.loadPixels();
 	drawcontrol("slide");
-
+ touchtrack[0] = false; 
 	for (var i = 0; i < img.pixels.length / 4; i++) {
 		j = i * 4;
 		y = f(i / IX);
@@ -150,16 +151,25 @@ function draw() {
 
 for(var l=0;l<Object.keys(keys).length;l++){
 		if (s(keys[Object.keys(keys)[l]].s)) {
-			// if(x==m.x&&y==m.y){
-			// 	keys[Object.keys(keys)[l]].touching=true;
-			// } else {
-			// 	keys[Object.keys(keys)[l]].touching=false;
-			// }
+
+			if(x==m.x&&y==m.y){
+				keys[Object.keys(keys)[l]].touching=true;
+				touchtrack=[true,l];
+			}	  
+			if(keys[Object.keys(keys)[l]].touching==true&&touchtrack[1]!=l){
+				keys[Object.keys(keys)[l]].touching=false; 
+			}
 
 			if(keys[Object.keys(keys)[l]].touching==true){
-			img.pixels[j] = keys[Object.keys(keys)[l]].color[0];
-			img.pixels[j + 1] = keys[Object.keys(keys)[l]].color[1];
-			img.pixels[j + 2] = keys[Object.keys(keys)[l]].color[2];
+				if(m.down==true){
+					img.pixels[j] = keys[Object.keys(keys)[l]].color[0]-100;
+					img.pixels[j + 1] = keys[Object.keys(keys)[l]].color[1]-100;
+					img.pixels[j + 2] = keys[Object.keys(keys)[l]].color[2]-100;
+				} else {
+			img.pixels[j] = keys[Object.keys(keys)[l]].color[0]-50;
+			img.pixels[j + 1] = keys[Object.keys(keys)[l]].color[1]-50;
+			img.pixels[j + 2] = keys[Object.keys(keys)[l]].color[2]-50;
+			}
 			}else {
 				img.pixels[j] = keys[Object.keys(keys)[l]].color[0];
 				img.pixels[j + 1] = keys[Object.keys(keys)[l]].color[1];
@@ -192,7 +202,12 @@ for(var l=0;l<Object.keys(keys).length;l++){
 
 		
 	}
-	
+	console.log(touchtrack);
+	if(touchtrack[0]==false){
+		keys[Object.keys(keys)[touchtrack[1]]].touching =false; 
+		 touchtrack = [false,0]; 
+	}
+// console.log(Object.keys(keys)[touchtrack[1]]); 
 
 	img.updatePixels();
 	image(img, 0, 0, CX, CY, 0, 0);
