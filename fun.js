@@ -165,6 +165,7 @@ for(var l=0;l<Object.keys(keys).length;l++){
 					img.pixels[j] = keys[Object.keys(keys)[l]].color[0]-100;
 					img.pixels[j + 1] = keys[Object.keys(keys)[l]].color[1]-100;
 					img.pixels[j + 2] = keys[Object.keys(keys)[l]].color[2]-100;
+					keys[Object.keys(keys)[l]].pressed=true;
 				} else {
 			img.pixels[j] = keys[Object.keys(keys)[l]].color[0]-50;
 			img.pixels[j + 1] = keys[Object.keys(keys)[l]].color[1]-50;
