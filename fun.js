@@ -161,6 +161,7 @@ function setup() {
 	m.ly = 0;
 	m.down = false;
 	touchtrack = [false, 0];
+	m.change=false;
 }
 
 function draw() {
@@ -175,7 +176,7 @@ function draw() {
 	drawcontrol("hpf");
 	drawcontrol("lhf");
 	drawcontrol("toggle"); 
-	txt(controls.toggle[3],50,50,(255,255,255));
+	// txt(controls.toggle[3],50,50,(255,255,255));
 	if (frameCount % 20 == 0) { 
 		txt(f(frameRate()), 1, IY * 0.95, (255, 255, 255));
 	}
@@ -251,12 +252,10 @@ function draw() {
 		}
 	} else if(ct[0]==2){
 		if(m.x>=ct[1]-1&&m.x<=ct[1]+1&&m.y>=ct[1]-1&&m.y<=ct[1]+1&&m.down==true){	
-			ct[3]= !ct[3];
-			// if(ct[3]==true){
-			// 	ct[3]=false;
-			// } else if(ct[3]==false){
-			// 	ct[3]=true;
-			// }
+			if(m.change==false){
+				ct[3]= !ct[3];
+			}
+			m.change=true;
 		}
 	}
 	}
@@ -327,10 +326,12 @@ function bline(x0, y0, x1, y1, c1, c2, c3) {
 
 function mousePressed() {
 	m.down = true;
+
 }
 
 function mouseReleased() {
 	m.down = false;
+	m.change=false;
 }
 
 function drawcontrol(name) {
