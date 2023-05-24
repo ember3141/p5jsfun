@@ -4,6 +4,7 @@ const CX = 500,
 	IX = 100,
 	IY = 100;
 
+
 const keys = {
 	c: {
 		s: [
@@ -111,46 +112,31 @@ const keys = {
 };
 
 var controls = {
-	slide: {
-		sx: 5,
-		sy: 40,
-		ex: 5,
-		ey: 50,
-		min: 0,
-		max: 100,
-		inc: 1,
-		val: 0.5
+	/* lpf: {
+    0 	sx: 5,
+	1 	sy: 12,
+	2 	ex: 5,
+	3 	ey: 22,
+	4 	min: 0,
+	5 	max: 100,
+	6 	inc: 1,
+	7 	val: 0.5,
+	8 	color: [0,0,255]
+	9     type: 1 is slide, 2 is button
 	},
-	blide: {
-		sx: 10,
-		sy: 40,
-		ex: 10,
-		ey: 50,
-		min: 0,
-		max: 100,
-		inc: 1,
-		val: 0.5
-	},
-	clide: {
-		sx: 15,
-		sy: 40,
-		ex: 15,
-		ey: 50,
-		min: 0,
-		max: 100, 
-		inc: 1,
-		val: 0.5
-	},
-	dlide: {
-		sx: 20,
-		sy: 40,
-		ex: 20,
-		ey: 50,
-		min: 0,
-		max: 100,
-		inc: 1,
-		val: 0.5
-	},
+	button
+	0, type 2
+	1  x
+	2  y
+	5  val true/false
+	6 color off
+	7 color on
+	*/
+	
+	lpf: [1,5, 12, 5, 22, 0, 100, 1, 0.5, [0, 0, 255]],
+	hpf: [1,10, 12, 10, 22, 0, 100, 1, 0.5, [255, 0, 0]],
+	lhf: [1,15, 12, 15, 22, 0, 100, 1, 0.5, [200, 0, 255]], 
+	toggle: [2,60,60,false,[100,0,0],[255,0,0]]
 };
 
 function setup() {
@@ -167,8 +153,8 @@ function setup() {
 	img.updatePixels();
 	noSmooth();
 	noCursor();
+	frameRate(60);
 	m = {};
-
 	m.llx = 0;
 	m.lly = 0;
 	m.lx = 0;
@@ -178,15 +164,22 @@ function setup() {
 }
 
 function draw() {
+
 	clear();
 	m.x = f(mouseX * IX / CX);
 	m.y = f(mouseY * IY / CY);
 
 	img.loadPixels();
-	drawcontrol("slide");
-	drawcontrol("blide");
-	drawcontrol("clide");
-	drawcontrol("dlide");
+	txt("LHF", 5, 5, (255, 255, 255));
+	drawcontrol("lpf");
+	drawcontrol("hpf");
+	drawcontrol("lhf");
+	drawcontrol("toggle"); 
+	txt(controls.toggle[3],50,50,(255,255,255));
+	if (frameCount % 20 == 0) { 
+		txt(f(frameRate()), 1, IY * 0.95, (255, 255, 255));
+	}
+
 	touchtrack[0] = false;
 	for (var i = 0; i < img.pixels.length / 4; i++) {
 		j = i * 4;
@@ -244,24 +237,38 @@ function draw() {
 			}
 		}
 
-		for(var n =0; n<Object.keys(controls).length; n++){
-			var ct = controls[Object.keys(controls)[n]];
-			var dist = Math.sqrt(Math.pow(ct.sx - ct.ex, 2) + Math.pow(ct.sy - ct.ey, 2));
-			if((m.x>ct.sx-2&&m.x<ct.sx+2)&&m.y>ct.sy&&m.y<ct.ey&&m.down==true){
-				  ct.val=((m.y-ct.sy)/dist);
-			}
-		}
+
 
 	}
+	for (var n = 0; n < Object.keys(controls).length; n++) {
 
+		var ct = controls[Object.keys(controls)[n]];
+		if(ct[0]==1){
+		var dist = Math.sqrt(Math.pow(ct[1] - ct[3], 2) + Math.pow(ct[2] - ct[4], 2));
+		if ((m.x > ct[1] - 2 && m.x < ct[1] + 2) && m.y > ct[2] && m.y < ct[4] && m.down == true) {
+			var num = 1-((m.y - ct[2]) / dist);
+			ct[8]=Math.round(num * 10) / 10;
+		}
+	} else if(ct[0]==2){
+		if(m.x>=ct[1]-1&&m.x<=ct[1]+1&&m.y>=ct[1]-1&&m.y<=ct[1]+1&&m.down==true){	
+			ct[3]= !ct[3];
+			// if(ct[3]==true){
+			// 	ct[3]=false;
+			// } else if(ct[3]==false){
+			// 	ct[3]=true;
+			// }
+		}
+	}
+	}
 	if (touchtrack[0] == false) {
 		keys[Object.keys(keys)[touchtrack[1]]].touching = false;
 		touchtrack = [false, 0];
 	}
-// console.log(controls.slide.val);
+	// console.log(mouseDown());
 
 	img.updatePixels();
 	image(img, 0, 0, CX, CY, 0, 0);
+	// console.log(frameRate());
 	m.llx = m.lx;
 	m.lly = m.ly;
 	m.lx = m.x;
@@ -328,21 +335,249 @@ function mouseReleased() {
 
 function drawcontrol(name) {
 	var ct = controls[name];
-	var dist = Math.sqrt(Math.pow(ct.sx - ct.ex, 2) + Math.pow(ct.sy - ct.ey, 2));
-	// if(x==controls[name].sx&&y==controls[name].sy){
-	// img.pixels[j]=255;
-	// }
-	bline(ct.sx, ct.sy, ct.ex, ct.ey, 55, 55, 55);
-	img.set(ct.sx, ct.sy + dist * ct.val, color(155, 155, 155));
-	img.set(ct.sx + 1, ct.sy + dist * ct.val, color(155, 155, 155));
-	// img.set(ct.sx + 2, ct.sy + dist * ct.val, color(155, 155, 155));
-	img.set(ct.sx - 1, ct.sy + dist * ct.val, color(155, 155, 155));
+	if(ct[0]==1){
+	var dist = Math.sqrt(Math.pow(ct[1] - ct[3], 2) + Math.pow(ct[2] - ct[4], 2));
 
-	bline(ct.sx+1, ct.sy, ct.ex+1, f(ct.sy + dist * ct.val-1),0, 0, 0);
-	bline(ct.sx-1, ct.sy, ct.ex-1, f(ct.sy + dist * ct.val-1),0, 0, 0);
-	bline(ct.sx-1, ct.ey, ct.ex-1, f(ct.sy + dist * ct.val+1),0, 0, 0);
-	bline(ct.sx+1, ct.ey, ct.ex+1, f(ct.sy + dist * ct.val+1),0, 0, 0);
+	bline(ct[1], ct[2], ct[3], ct[4], 55, 55, 55);
+	img.set(ct[1], ct[2] + dist * (1-ct[8]), color(ct[9][0], ct[9][1], ct[9][2]));
+	img.set(ct[1] + 1, ct[2] + dist * (1-ct[8]), color(155, 155, 155));
+	// img.set(ct[0] + 2, ct[1] + dist * ct[7], color(155, 155, 155));
+	img.set(ct[1] - 1, ct[2] + dist * (1-ct[8]), color(155, 155, 155));
+
+	bline(ct[1] + 1, ct[2], ct[3] + 1, f(ct[2] + dist * (1-ct[8]) - 1), 0, 0, 0);
+	bline(ct[1] - 1, ct[2], ct[3] - 1, f(ct[2] + dist * (1-ct[8]) - 1), 0, 0, 0);
+	bline(ct[1] - 1, ct[4], ct[3] - 1, f(ct[2] + dist * (1-ct[8]) + 1), 0, 0, 0);
+	bline(ct[1] + 1, ct[4], ct[3] + 1, f(ct[2] + dist * (1-ct[8]) + 1), 0, 0, 0);
+} else if(ct[0]==2){
+    img.set(ct[1]+1,  ct[2]-1,color(155, 155, 155));
+	img.set(ct[1]-1,  ct[2]-1,color(155, 155, 155));
+	img.set(ct[1]-1,  ct[2]+1,color(155, 155, 155));
+	img.set(ct[1]+1,  ct[2]+1,color(155, 155, 155));
+
+	if(ct[3]==false){
+	img.set(ct[1]+1,ct[2],color(ct[4][0], ct[4][1], ct[4][2]));
+	img.set(ct[1],  ct[2]-1,color(ct[4][0], ct[4][1], ct[4][2]));
+	img.set(ct[1]-1,ct[2],color(ct[4][0], ct[4][1], ct[4][2]));
+	img.set(ct[1],  ct[2]+1,color(ct[4][0], ct[4][1], ct[4][2]));
+	img.set(ct[1],ct[2],color(ct[4][0], ct[4][1], ct[4][2]));
+} else 	if(ct[3]==true){
+	img.set(ct[1]+1,ct[2],color(ct[5][0], ct[5][1], ct[5][2]));
+	img.set(ct[1],  ct[2]-1,color(ct[5][0], ct[5][1], ct[5][2]));
+	img.set(ct[1]-1,ct[2],color(ct[5][0], ct[5][1], ct[5][2]));
+	img.set(ct[1],  ct[2]+1,color(ct[5][0], ct[5][1], ct[5][2]));
+	img.set(ct[1],ct[2],color(ct[5][0], ct[5][1], ct[5][2]));
+}
+}
 
 }
+
+function txt(text, xx, yy, colour) {
+
+	var texts = text.toString().toUpperCase().split("");
+
+	for (var o = 0; o < texts.length; o++) {
+
+		// if(texts[o]==
+		for (var q = 0; q < 15; q++) {
+			img.set(xx + (q % 3) + (o * 4), yy + f(q / 3), color(0));
+		}
+		for (var p = 0; p < lett[texts[o]].length; p++) {
+
+			if (lett[texts[o]][p] == 1) {
+				img.set(xx + (p % 3) + (o * 4), yy + f(p / 3), color(colour));
+			}
+		}
+
+	}
+}
+
+const lett = {
+	A: [0, 1, 0,
+		1, 0, 1,
+		1, 1, 1,
+		1, 0, 1,
+		1, 0, 1],
+	B: [1, 1, 0,
+		1, 0, 1,
+		1, 1, 0,
+		1, 0, 1,
+		1, 1, 0],
+	C: [0, 1, 1,
+		1, 0, 0,
+		1, 0, 0,
+		1, 0, 0,
+		0, 1, 1],
+	D: [1, 1, 0,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 1, 0],
+	E: [1, 1, 1,
+		1, 0, 0,
+		1, 1, 1,
+		1, 0, 0,
+		1, 1, 1],
+	F: [1, 1, 1,
+		1, 0, 0,
+		1, 1, 1,
+		1, 0, 0,
+		1, 0, 0],
+	G: [0, 1, 1,
+		1, 0, 0,
+		1, 0, 1,
+		1, 0, 1,
+		0, 1, 1],
+	H: [1, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		1, 0, 1,
+		1, 0, 1],
+	I: [1, 1, 1,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		1, 1, 1],
+	J: [1, 1, 1,
+		0, 0, 1,
+		0, 0, 1,
+		1, 0, 1,
+		0, 1, 0],
+	K: [1, 0, 1,
+		1, 0, 1,
+		1, 1, 0,
+		1, 0, 1,
+		1, 0, 1],
+	L: [1, 0, 0,
+		1, 0, 0,
+		1, 0, 0,
+		1, 0, 0,
+		1, 1, 1],
+	M: [1, 0, 1,
+		1, 1, 1,
+		1, 1, 1,
+		1, 0, 1,
+		1, 0, 1],
+	N: [0, 1, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1],
+	O: [1, 1, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 1, 1],
+	P: [1, 1, 1,
+		1, 0, 1,
+		1, 1, 1,
+		1, 0, 0,
+		1, 0, 0],
+	Q: [1, 1, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 0, 1],
+	R: [1, 1, 1,
+		1, 0, 1,
+		1, 1, 0,
+		1, 0, 1,
+		1, 0, 1],
+	S: [1, 1, 1,
+		1, 0, 0,
+		1, 1, 1,
+		0, 0, 1,
+		1, 1, 1],
+	T: [1, 1, 1,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0],
+	U: [1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 1, 1],
+	V: [1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		0, 1, 0],
+	W: [1, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		1, 1, 1,
+		1, 0, 1],
+	X: [1, 0, 1,
+		1, 0, 1,
+		0, 1, 0,
+		1, 0, 1,
+		1, 0, 1],
+	y: [1, 0, 1,
+		1, 0, 1,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0],
+	Z: [1, 1, 1,
+		0, 0, 1,
+		0, 1, 0,
+		1, 0, 0,
+		1, 1, 1],
+	"0": [1, 1, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 0, 1,
+		1, 1, 1],
+	"1": [1, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		1, 1, 1],
+	"2": [1, 1, 1,
+		0, 0, 1,
+		1, 1, 1,
+		1, 0, 0,
+		1, 1, 1],
+	"3": [1, 1, 1,
+		0, 0, 1,
+		0, 1, 1,
+		0, 0, 1,
+		1, 1, 1],
+	"4": [1, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 0, 1,
+		0, 0, 1],
+	"5": [1, 1, 1,
+		1, 0, 0,
+		1, 1, 1,
+		0, 0, 1,
+		1, 1, 1],
+	"6": [1, 1, 1,
+		1, 0, 0,
+		1, 1, 1,
+		1, 0, 1,
+		1, 1, 1],
+	"7": [1, 1, 1,
+		0, 0, 1,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0],
+	"8": [1, 1, 1,
+		1, 0, 1,
+		1, 1, 1,
+		1, 0, 1,
+		1, 1, 1],
+	"9": [1, 1, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 0, 1,
+		1, 1, 1],
+	".": [0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		1, 0, 0],
+
+};
 
 //√((x2 – x1)² + (y2 – y1)²)
